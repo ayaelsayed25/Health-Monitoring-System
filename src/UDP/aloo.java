@@ -19,7 +19,6 @@ public class aloo {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
-
             Configuration configuration = new Configuration();
             configuration.set("fs.defaultFS", "hdfs://206.189.108.184:9000");
             FileSystem fileSystem = FileSystem.get(configuration);
