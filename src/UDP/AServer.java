@@ -5,12 +5,12 @@ import MessagesHandler.MessageHandler;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 public class AServer
 {
     final static int BUFFER_SIZE = 65535;
     final static int PORT = 8080;
+
     public static void main(String[] args) throws IOException
     {
         DatagramSocket ds = new DatagramSocket(PORT);

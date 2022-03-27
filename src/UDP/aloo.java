@@ -21,7 +21,7 @@ public class aloo {
 
 
             Configuration configuration = new Configuration();
-            configuration.set("fs.defaultFS", "hdfs://206.189.108.184");
+            configuration.set("fs.defaultFS", "hdfs://206.189.108.184:9000");
             FileSystem fileSystem = FileSystem.get(configuration);
             //Create a path
             String fileName = "read_write_hdfs_example.txt";

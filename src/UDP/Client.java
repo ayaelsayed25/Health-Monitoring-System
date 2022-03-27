@@ -16,7 +16,7 @@ public class Client
 
     static {
         try {
-            ip = InetAddress.getByName("localhost");
+            ip = InetAddress.getByName("192.168.50.33");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
