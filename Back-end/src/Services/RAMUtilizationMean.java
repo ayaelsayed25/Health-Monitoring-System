@@ -33,8 +33,7 @@ public class RAMUtilizationMean {
                 for (String s : tuple) {
                     JSONObject obj = (JSONObject) jsonParser.parse(s);
                     service = obj.getAsString("ServiceName");
-
-                    ram = (JSONObject)obj.get("RAM");
+                    ram = (JSONObject) obj.get("RAM");
                     free = (float) ram.getAsNumber("Free");
                     total = (float) ram.getAsNumber("Total");
                     context.write(new Text(service), new FloatWritable((total - free)/total));
@@ -51,7 +50,6 @@ public class RAMUtilizationMean {
         public void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
             float sum = 0;
             int i = 0;
-            JSONObject obj = new JSONObject();
 
             for (FloatWritable val : values) {
                 sum += val.get();
@@ -62,7 +60,7 @@ public class RAMUtilizationMean {
         }
     }
 
-    public void calculateRamMean(String inputPath, String outputPath) throws IOException {
+    public static void main(String[] args) throws IOException {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Mean Ram Utilization");
         job.setJarByClass(RAMUtilizationMean.class);
@@ -71,7 +69,8 @@ public class RAMUtilizationMean {
         job.setReducerClass(RAMUtilizationMean.RamUtilizationReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FloatWritable.class);
-        FileInputFormat.addInputPath(job, new Path(inputPath));
-        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+
+        FileInputFormat.addInputPath(job, new Path("http://206.189.108.184:9870/explorer.html#/hello/mama.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("http://206.189.108.184:9870/explorer.html#/hello/mama.txt"));
     }
 }

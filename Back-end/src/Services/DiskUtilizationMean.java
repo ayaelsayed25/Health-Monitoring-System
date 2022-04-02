@@ -51,7 +51,6 @@ public class DiskUtilizationMean {
         public void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
             float sum = 0;
             int i = 0;
-            JSONObject obj = new JSONObject();
 
             for (FloatWritable val : values) {
                 sum += val.get();

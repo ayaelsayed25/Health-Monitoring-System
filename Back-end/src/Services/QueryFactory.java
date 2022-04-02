@@ -34,12 +34,8 @@ public class QueryFactory {
                 }
                 break;
             case 2:
-                try {
-                    RAMUtilizationMean ramUtilizationMean = new RAMUtilizationMean();
-                    ramUtilizationMean.calculateRamMean("", "");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                RAMUtilizationMean ramUtilizationMean = new RAMUtilizationMean();
+//                    ramUtilizationMean("", "");
                 break;
         }
         return null;
