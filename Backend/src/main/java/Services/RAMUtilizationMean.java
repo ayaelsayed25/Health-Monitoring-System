@@ -71,6 +71,6 @@ public class RAMUtilizationMean {
         job.setOutputValueClass(FloatWritable.class);
 
         FileInputFormat.addInputPath(job, new Path("hdfs://hadoop-master:9000/hello/"));
-        FileOutputFormat.setOutputPath(job, new Path("hdfs://hadoop-master:9000/hello/"));
+        FileOutputFormat.setOutputPath(job, new Path("hdfs://hadoop-master:9000/mama/"));
     }
 }
