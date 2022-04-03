@@ -28,7 +28,7 @@ public class WindowFilter  extends Configured implements PathFilter {
             System.out.println(start);
             end = format.parse(conf.get("end_date"));
             System.out.println(end);
-            file = format.parse(fileName);
+            file = format.parse(f);
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
