@@ -14,7 +14,7 @@ public class WindowFilter  extends Configured implements PathFilter {
 
 
     Configuration conf;
-    FileSystem fs;
+    FileSystem fs ;
 
 
     @Override
@@ -49,5 +49,12 @@ public class WindowFilter  extends Configured implements PathFilter {
     @Override
     public void setConf(Configuration conf) {
         this.conf = conf;
+        if (conf != null) {
+            try {
+                fs = FileSystem.get(conf);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
