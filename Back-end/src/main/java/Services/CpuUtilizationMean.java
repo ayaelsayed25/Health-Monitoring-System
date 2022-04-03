@@ -17,22 +17,22 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class CpuUtilizationMean {
 
-    public static class TokenizerMapper extends Mapper<Object, Text, Text, FloatWritable>{
+    public static class TokenizerMapper extends Mapper<Object, Text, Text, DoubleWritable>{
 
 
-        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException{
+        public void map(Object key, Text value, Context context) throws IOException, InterruptedException{
 
             String line = value.toString();
             String[] tuple = line.split("\\n");
             JSONParser jsonParser = new JSONParser();
             String service;
-            float cpu;
+            double cpu;
             try{
                 for (String s : tuple) {
                     JSONObject obj = (JSONObject) jsonParser.parse(s);
-                    service = obj.getAsString("ServiceName");
-                    cpu = (Float) obj.getAsNumber("CPU");
-                    context.write(new Text(service), new FloatWritable(cpu));
+                    service = obj.getAsString("serviceName");
+                    cpu = obj.getAsNumber("CPU").doubleValue();
+                    context.write(new Text(service), new DoubleWritable(cpu));
                 }
             }
             catch (ParseException e) {
@@ -41,22 +41,24 @@ public class CpuUtilizationMean {
         }
     }
 
-    public static class CpuUtilizationReducer extends Reducer<Text, FloatWritable, Text, FloatWritable> {
 
-        public void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
-            float sum = 0;
+    public static class CpuUtilizationReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+
+        public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
+            double sum = 0;
             int i = 0;
 
-            for (FloatWritable val : values) {
+            for (DoubleWritable val : values) {
                 sum += val.get();
                 i++;
             }
-            FloatWritable mean = new FloatWritable(sum/i);
+            DoubleWritable mean = new DoubleWritable(sum/i);
             context.write(key, mean);
         }
     }
 
-    public void calculateCpuMean(String inputPath, String outputPath) throws IOException {
+    public static void main(String[] args) throws Exception {
+
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Mean CPU Utilization");
         job.setJarByClass(CpuUtilizationMean.class);
@@ -64,8 +66,11 @@ public class CpuUtilizationMean {
         job.setCombinerClass(CpuUtilizationReducer.class);
         job.setReducerClass(CpuUtilizationReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(FloatWritable.class);
-        FileInputFormat.addInputPath(job, new Path(inputPath));
-        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        job.setOutputValueClass(DoubleWritable.class);
+
+        FileInputFormat.addInputPath(job, new Path("hdfs://hadoop-master:9000/input"));
+        FileOutputFormat.setOutputPath(job, new Path("hdfs://hadoop-master:9000/output"));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
+

@@ -17,27 +17,26 @@ import java.io.IOException;
 
 public class DiskUtilizationMean {
 
-    public static class TokenizerMapper extends Mapper<Object, Text, Text, FloatWritable>{
+    public static class TokenizerMapper extends Mapper<Object, Text, Text, DoubleWritable>{
 
 
-        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException{
-
+        public void map(Object key, Text value, Context context) throws IOException, InterruptedException{
             String line = value.toString();
             String[] tuple = line.split("\\n");
             JSONParser jsonParser = new JSONParser();
             String service;
             JSONObject disk;
-            float free;
-            float total;
+            double free;
+            double total;
             try{
                 for (String s : tuple) {
-                    JSONObject obj = (JSONObject) jsonParser.parse(s);
-                    service = obj.getAsString("ServiceName");
 
-                    disk = (JSONObject)obj.get("Disk");
-                    free = (float) disk.getAsNumber("Free");
-                    total = (float) disk.getAsNumber("Total");
-                    context.write(new Text(service), new FloatWritable((total - free)/total));
+                    JSONObject obj = (JSONObject) jsonParser.parse(s);
+                    service = obj.getAsString("serviceName");
+                    disk = (JSONObject) obj.get("Disk");
+                    free = disk.getAsNumber("Free").doubleValue();
+                    total = disk.getAsNumber("Total").doubleValue();
+                    context.write(new Text(service), new DoubleWritable((total - free)/total));
                 }
             }
             catch (ParseException e) {
@@ -46,22 +45,22 @@ public class DiskUtilizationMean {
         }
     }
 
-    public static class DiskUtilizationReducer extends Reducer<Text, FloatWritable, Text, FloatWritable> {
+    public static class DiskUtilizationReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
 
-        public void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
-            float sum = 0;
+        public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
+            double sum = 0;
             int i = 0;
 
-            for (FloatWritable val : values) {
+            for (DoubleWritable val : values) {
                 sum += val.get();
                 i++;
             }
-            FloatWritable mean = new FloatWritable(sum/i);
+            DoubleWritable mean = new DoubleWritable(sum/i);
             context.write(key, mean);
         }
     }
 
-    public void calculateDiskMean(String inputPath, String outputPath) throws IOException {
+    public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Mean Disk Utilization");
         job.setJarByClass(DiskUtilizationMean.class);
@@ -69,8 +68,9 @@ public class DiskUtilizationMean {
         job.setCombinerClass(DiskUtilizationReducer.class);
         job.setReducerClass(DiskUtilizationReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(FloatWritable.class);
-        FileInputFormat.addInputPath(job, new Path(inputPath));
-        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        job.setOutputValueClass(DoubleWritable.class);
+
+        FileInputFormat.addInputPath(job, new Path("hdfs://hadoop-master:9000/hello/mama.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("hdfs://hadoop-master:9000/mama/"));
     }
 }

@@ -17,28 +17,26 @@ import java.io.IOException;
 
 public class RAMUtilizationMean {
 
-    public static class TokenizerMapper extends Mapper<Object, Text, Text, FloatWritable>{
+    public static class TokenizerMapper extends Mapper<Object, Text, Text, DoubleWritable>{
 
 
-        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException{
-
+        public void map(Object key, Text value, Context context) throws IOException, InterruptedException{
             String line = value.toString();
-            System.out.println(line);
             String[] tuple = line.split("\\n");
             JSONParser jsonParser = new JSONParser();
             String service;
             JSONObject ram;
-            float free;
-            float total;
+            double free;
+            double total;
             try{
                 for (String s : tuple) {
 
                     JSONObject obj = (JSONObject) jsonParser.parse(s);
-                    service = obj.getAsString("ServiceName");
+                    service = obj.getAsString("serviceName");
                     ram = (JSONObject) obj.get("RAM");
-                    free = (float) ram.getAsNumber("Free");
-                    total = (float) ram.getAsNumber("Total");
-                    context.write(new Text(service), new FloatWritable((total - free)/total));
+                    free = ram.getAsNumber("Free").doubleValue();
+                    total = ram.getAsNumber("Total").doubleValue();
+                    context.write(new Text(service), new DoubleWritable((total - free)/total));
                 }
             }
             catch (ParseException e) {
@@ -47,22 +45,22 @@ public class RAMUtilizationMean {
         }
     }
 
-    public static class RamUtilizationReducer extends Reducer<Text, FloatWritable, Text, FloatWritable> {
+    public static class RamUtilizationReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
 
-        public void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
-            float sum = 0;
+        public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
+            double sum = 0;
             int i = 0;
 
-            for (FloatWritable val : values) {
+            for (DoubleWritable val : values) {
                 sum += val.get();
                 i++;
             }
-            FloatWritable mean = new FloatWritable(sum/i);
+            DoubleWritable mean = new DoubleWritable(sum/i);
             context.write(key, mean);
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Mean Ram Utilization");
         job.setJarByClass(RAMUtilizationMean.class);
@@ -70,7 +68,7 @@ public class RAMUtilizationMean {
         job.setCombinerClass(RamUtilizationReducer.class);
         job.setReducerClass(RamUtilizationReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(FloatWritable.class);
+        job.setOutputValueClass(DoubleWritable.class);
 
         FileInputFormat.addInputPath(job, new Path("hdfs://hadoop-master:9000/hello/mama.txt"));
         FileOutputFormat.setOutputPath(job, new Path("hdfs://hadoop-master:9000/mama/"));
