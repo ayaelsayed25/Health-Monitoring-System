@@ -51,6 +51,7 @@
 			<artifactId>hadoop-common</artifactId>
 			<version>3.3.2</version>
 		</dependency>
+
 	</dependencies>
 
 
