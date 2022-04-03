@@ -18,8 +18,8 @@ public class WindowFilter  extends Configured implements PathFilter {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
         String[] tokens = path.toString().split("[\\\\|/]");
-        String f = tokens[tokens.length - 1];
-        String fileName = f.substring(0, f.length() - 4);
+        String f = path.getName();
+        String fileName = f;
 
         Date start = null;
         Date end = null;
@@ -29,7 +29,7 @@ public class WindowFilter  extends Configured implements PathFilter {
             System.out.println(start);
             end = format.parse(conf.get("end_date"));
             System.out.println(end);
-            file = format.parse("01-01-2023");
+            file = format.parse(fileName);
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
