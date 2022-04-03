@@ -1,8 +1,9 @@
 package Services;
 
+import Services.MeanQueries.CpuUtilizationMean;
+import Services.MeanQueries.DiskUtilizationMean;
+import Services.MeanQueries.RAMUtilizationMean;
 import net.minidev.json.JSONObject;
-
-import java.io.IOException;
 
 public class QueryFactory {
 
@@ -17,20 +18,16 @@ public class QueryFactory {
     public JSONObject createQuery(int id){
         switch (id){
             case 0:
-                try {
-                    CpuUtilizationMean utilizationMean = new CpuUtilizationMean();
-                    utilizationMean.calculateCpuMean("", "");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                CpuUtilizationMean utilizationMean = new CpuUtilizationMean();
+//                    utilizationMean.calculateCpuMean("", "");
                 break;
             case 1:
-                try {
+//                try {
                     DiskUtilizationMean UtilizationMean = new DiskUtilizationMean();
-                    UtilizationMean.calculateDiskMean("", "");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                    UtilizationMean.calculateDiskMean("", "");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
                 break;
             case 2:
                 RAMUtilizationMean ramUtilizationMean = new RAMUtilizationMean();

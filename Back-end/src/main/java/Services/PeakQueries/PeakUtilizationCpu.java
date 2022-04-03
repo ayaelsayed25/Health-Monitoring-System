@@ -1,35 +1,35 @@
-package Services;
+package Services.PeakQueries;
 
-import Services.Mappers.CountMapper;
+import Services.Mappers.CPUMapper;
+import Services.Reducers.PeakReducer;
 import Services.Proxy.WindowFilter;
-import Services.Reducers.CountReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
-public class MessageCount {
+
+public class PeakUtilizationCpu {
 
     public void calculate(String start, String end) throws Exception {
 
         Configuration conf = new Configuration();
-        conf.setIfUnset("start_date", start);
-        conf.setIfUnset("end_date", end);
+        conf.set("start_date", start);
+        conf.set("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/input";
-        String outputPath = "hdfs://hadoop-master:9000/output/MessageCount"+ start + end + ".log";
+        String outputPath = "hdfs://hadoop-master:9000/output/PeakCPU"+ start + end + ".log";
 
-        Job job = Job.getInstance(conf, "Message Count");
-        job.setJarByClass(MessageCount.class);
-        job.setMapperClass(CountMapper.class);
-        job.setCombinerClass(CountReducer.class);
-        job.setReducerClass(CountReducer.class);
+        Job job = Job.getInstance(conf, "Peak CPU Utilization");
+        job.setJarByClass(PeakUtilizationCpu.class);
+        job.setMapperClass(CPUMapper.class);
+        job.setCombinerClass(PeakReducer.class);
+        job.setReducerClass(PeakReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(DoubleWritable.class);
 
         FileInputFormat.setInputPathFilter(job, WindowFilter.class);
         FileInputFormat.addInputPath(job, new Path(inputPath));
