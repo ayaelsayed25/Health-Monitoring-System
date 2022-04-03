@@ -17,9 +17,8 @@ public class WindowFilter  extends Configured implements PathFilter {
     public boolean accept(Path path) {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
-        String[] tokens = path.toString().split("[\\\\|/]");
-        String f = path.getName();
-        String fileName = f;
+        String f = path.toString();
+        String fileName = f.substring(f.length() - 14, f.length() - 4);
 
         Date start = null;
         Date end = null;
