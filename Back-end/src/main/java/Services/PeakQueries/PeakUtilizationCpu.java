@@ -31,7 +31,7 @@ public class PeakUtilizationCpu {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
 
-//        FileInputFormat.setInputPathFilter(job, WindowFilter.class);
+        FileInputFormat.setInputPathFilter(job, WindowFilter.class);
         FileInputFormat.addInputPath(job, new Path(inputPath));
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
         System.exit(job.waitForCompletion(true) ? 0 : 1);

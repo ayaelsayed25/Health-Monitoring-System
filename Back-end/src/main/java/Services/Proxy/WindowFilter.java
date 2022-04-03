@@ -40,6 +40,5 @@ public class WindowFilter  extends Configured implements PathFilter {
     @Override
     public void setConf(Configuration conf) {
         this.conf = conf;
-        pattern = Pattern.compile(conf.get("file.pattern"));
     }
 }
