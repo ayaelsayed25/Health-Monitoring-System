@@ -7,6 +7,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -19,16 +20,13 @@ public class WindowFilter  extends Configured implements PathFilter {
 
     @Override
     public boolean accept(Path path) {
-        try {
-            if (fs.isDirectory(path)) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        String f = path.toString();
+        if (f.substring(f.length() - 4).compareTo(".txt") != 0) {
+            return true;
         }
+
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
-        String f = path.toString();
         String fileName = f.substring(f.length() - 14, f.length() - 4);
 
         Date start = null;
