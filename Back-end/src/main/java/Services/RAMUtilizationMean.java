@@ -23,6 +23,7 @@ public class RAMUtilizationMean {
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException{
 
             String line = value.toString();
+            System.out.println(line);
             String[] tuple = line.split("\\n");
             JSONParser jsonParser = new JSONParser();
             String service;
@@ -31,6 +32,7 @@ public class RAMUtilizationMean {
             float total;
             try{
                 for (String s : tuple) {
+
                     JSONObject obj = (JSONObject) jsonParser.parse(s);
                     service = obj.getAsString("ServiceName");
                     ram = (JSONObject) obj.get("RAM");
@@ -70,7 +72,7 @@ public class RAMUtilizationMean {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FloatWritable.class);
 
-        FileInputFormat.addInputPath(job, new Path("hdfs://hadoop-master:9000/hello/"));
+        FileInputFormat.addInputPath(job, new Path("hdfs://hadoop-master:9000/hello/mama.txt"));
         FileOutputFormat.setOutputPath(job, new Path("hdfs://hadoop-master:9000/mama/"));
     }
 }
