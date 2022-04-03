@@ -2,9 +2,11 @@ package Services.Proxy;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,9 +14,18 @@ public class WindowFilter  extends Configured implements PathFilter {
 
 
     Configuration conf;
+    FileSystem fs;
+
 
     @Override
     public boolean accept(Path path) {
+        try {
+            if (fs.isDirectory(path)) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
         String f = path.toString();
@@ -25,10 +36,8 @@ public class WindowFilter  extends Configured implements PathFilter {
         Date file = null;
         try {
             start = format.parse(conf.get("start_date"));
-            System.out.println(start);
             end = format.parse(conf.get("end_date"));
-            System.out.println(end);
-            file = format.parse(path.toString());
+            file = format.parse(fileName);
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
