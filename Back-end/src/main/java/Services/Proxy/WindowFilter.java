@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class WindowFilter  extends Configured implements PathFilter {
 
-    Pattern pattern;
+
     Configuration conf;
 
     @Override
@@ -27,7 +27,9 @@ public class WindowFilter  extends Configured implements PathFilter {
         Date file = null;
         try {
             start = format.parse(conf.get("start_date"));
+            System.out.println(start);
             end = format.parse(conf.get("end_date"));
+            System.out.println(end);
             file = format.parse(fileName);
         } catch (java.text.ParseException e) {
             e.printStackTrace();
