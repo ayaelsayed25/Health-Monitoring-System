@@ -20,7 +20,7 @@ public class DiskUtilizationMean {
         conf.setIfUnset("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/input";
-        String outputPath = "hdfs://hadoop-master:9000/output/MeanDisk"+ start + end + ".txt";
+        String outputPath = "hdfs://hadoop-master:9000/output/MeanDisk"+ start + end + ".log";
 
         Job job = Job.getInstance(conf, "Mean Disk Utilization");
         job.setJarByClass(DiskUtilizationMean.class);

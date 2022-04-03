@@ -21,7 +21,7 @@ public class PeakUtilizationRAM {
         conf.setIfUnset("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/input";
-        String outputPath = "hdfs://hadoop-master:9000/output/PeakRAM"+ start + end + ".txt";
+        String outputPath = "hdfs://hadoop-master:9000/output/PeakRAM"+ start + end + ".log";
 
         Job job = Job.getInstance(conf, "Peak RAM Utilization");
         job.setJarByClass(PeakUtilizationRAM.class);

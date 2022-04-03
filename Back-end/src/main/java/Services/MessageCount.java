@@ -21,7 +21,7 @@ public class MessageCount {
         conf.setIfUnset("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/input";
-        String outputPath = "hdfs://hadoop-master:9000/output/PeakDisk"+ start + end + ".txt";
+        String outputPath = "hdfs://hadoop-master:9000/output/PeakDisk"+ start + end + ".log";
 
         Job job = Job.getInstance(conf, "Message Count");
         job.setJarByClass(MessageCount.class);

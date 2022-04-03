@@ -20,7 +20,7 @@ public class RAMUtilizationMean {
         conf.setIfUnset("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/input";
-        String outputPath = "hdfs://hadoop-master:9000/output/MeanRAM"+ start + end + ".txt";
+        String outputPath = "hdfs://hadoop-master:9000/output/MeanRAM"+ start + end + ".log";
 
         Job job = Job.getInstance(conf, "Mean RAM Utilization");
         job.setJarByClass(RAMUtilizationMean.class);

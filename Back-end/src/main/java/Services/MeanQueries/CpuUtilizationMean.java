@@ -21,7 +21,7 @@ public class CpuUtilizationMean {
         conf.setIfUnset("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/input";
-        String outputPath = "hdfs://hadoop-master:9000/output/MeanCPU"+ start + end + ".txt";
+        String outputPath = "hdfs://hadoop-master:9000/output/MeanCPU"+ start + end + ".log";
 
         Job job = Job.getInstance(conf, "Mean CPU Utilization");
         job.setJarByClass(CpuUtilizationMean.class);
