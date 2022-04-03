@@ -19,8 +19,8 @@ public class PeakUtilizationDisk {
         conf.set("start_date", start);
         conf.set("end_date", end);
 
-        String inputPath = "file:///hadoop-master:9000/input";
-        String outputPath = "file:///hadoop-master:9000/output/PeakDisk"+ start + end + ".txt";
+        String inputPath = "hdfs://hadoop-master:9000/input";
+        String outputPath = "hdfs://hadoop-master:9000/output/PeakDisk"+ start + end + ".txt";
 
         Job job = Job.getInstance(conf, "Peak Disk Utilization");
         job.setJarByClass(PeakUtilizationDisk.class);

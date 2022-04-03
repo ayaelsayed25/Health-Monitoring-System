@@ -17,11 +17,11 @@ public class PeakUtilizationCpu {
     public void calculate(String start, String end) throws Exception {
 
         Configuration conf = new Configuration();
-        conf.setIfUnset("start_date", start);
-        conf.setIfUnset("end_date", end);
+        conf.set("start_date", start);
+        conf.set("end_date", end);
 
-        String inputPath = "hdfs://hadoop-master:9000/input";
-        String outputPath = "hdfs://hadoop-master:9000/output/PeakCPU"+ start + end + ".txt";
+        String inputPath = "file:///hadoop-master:9000/input";
+        String outputPath = "file:///hadoop-master:9000/output/PeakCPU"+ start + end + ".txt";
 
         Job job = Job.getInstance(conf, "Peak CPU Utilization");
         job.setJarByClass(PeakUtilizationCpu.class);
