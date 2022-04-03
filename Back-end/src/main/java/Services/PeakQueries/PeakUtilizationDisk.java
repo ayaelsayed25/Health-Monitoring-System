@@ -16,8 +16,8 @@ public class PeakUtilizationDisk {
     public void calculate(String start, String end) throws Exception {
 
         Configuration conf = new Configuration();
-        conf.setIfUnset("start_date", start);
-        conf.setIfUnset("end_date", end);
+        conf.set("start_date", start);
+        conf.set("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/input";
         String outputPath = "hdfs://hadoop-master:9000/output/PeakDisk"+ start + end + ".txt";
