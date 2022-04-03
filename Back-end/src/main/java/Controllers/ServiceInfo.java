@@ -1,4 +1,5 @@
-import demo;
+package Controllers;
+
 
 public class ServiceInfo{
     String service;

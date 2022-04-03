@@ -20,7 +20,7 @@ public class MessageCount {
         conf.setIfUnset("start_date", start);
         conf.setIfUnset("end_date", end);
 
-        String inputPath = "hdfs://hadoop-master:9000/input";
+        String inputPath = "hdfs://hadoop-master:9000/data/processed";
         String outputPath = "hdfs://hadoop-master:9000/output/MessageCount"+ start + end + ".log";
 
         Job job = Job.getInstance(conf, "Message Count");

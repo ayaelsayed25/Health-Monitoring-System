@@ -20,7 +20,7 @@ public class PeakUtilizationCpu {
         conf.set("start_date", start);
         conf.set("end_date", end);
 
-        String inputPath = "hdfs://hadoop-master:9000/input";
+        String inputPath = "hdfs://hadoop-master:9000/data/processed";
         String outputPath = "hdfs://hadoop-master:9000/output/PeakCPU"+ start + end + ".log";
 
         Job job = Job.getInstance(conf, "Peak CPU Utilization");
