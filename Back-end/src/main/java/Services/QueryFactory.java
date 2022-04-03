@@ -1,8 +1,9 @@
 package Services;
 
+import Services.MeanQueries.CpuUtilizationMean;
+import Services.MeanQueries.DiskUtilizationMean;
+import Services.MeanQueries.RAMUtilizationMean;
 import net.minidev.json.JSONObject;
-
-import java.io.IOException;
 
 public class QueryFactory {
 
