@@ -1,4 +1,4 @@
-package Services.Reducers;
+package Services.SeparateServices.Reducers;
 
 
 import org.apache.hadoop.io.IntWritable;

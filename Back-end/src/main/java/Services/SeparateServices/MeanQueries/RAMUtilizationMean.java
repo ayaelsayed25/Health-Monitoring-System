@@ -1,8 +1,8 @@
-package Services.MeanQueries;
+package Services.SeparateServices.MeanQueries;
 
-import Services.Mappers.DiskMapper;
-import Services.Reducers.MeanReducer;
-import Services.Proxy.WindowFilter;
+import Services.SeparateServices.Mappers.RAMMapper;
+import Services.SeparateServices.Reducers.MeanReducer;
+import Services.SeparateServices.Proxy.WindowFilter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
-public class DiskUtilizationMean {
+public class RAMUtilizationMean {
 
     public void calculate(String start, String end) throws Exception {
 
@@ -20,11 +20,11 @@ public class DiskUtilizationMean {
         conf.setIfUnset("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/data/processed";
-        String outputPath = "hdfs://hadoop-master:9000/output/MeanDisk"+ start + end + ".log";
+        String outputPath = "hdfs://hadoop-master:9000/output/MeanRAM"+ start + end + ".log";
 
-        Job job = Job.getInstance(conf, "Mean Disk Utilization");
-        job.setJarByClass(DiskUtilizationMean.class);
-        job.setMapperClass(DiskMapper.class);
+        Job job = Job.getInstance(conf, "Mean RAM Utilization");
+        job.setJarByClass(RAMUtilizationMean.class);
+        job.setMapperClass(RAMMapper.class);
         job.setCombinerClass(MeanReducer.class);
         job.setReducerClass(MeanReducer.class);
         job.setOutputKeyClass(Text.class);

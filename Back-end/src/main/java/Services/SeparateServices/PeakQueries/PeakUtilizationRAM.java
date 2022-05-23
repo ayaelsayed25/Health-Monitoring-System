@@ -1,8 +1,8 @@
-package Services.MeanQueries;
+package Services.SeparateServices.PeakQueries;
 
-import Services.Mappers.CPUMapper;
-import Services.Reducers.MeanReducer;
-import Services.Proxy.WindowFilter;
+import Services.SeparateServices.Mappers.RAMMapper;
+import Services.SeparateServices.Reducers.PeakReducer;
+import Services.SeparateServices.Proxy.WindowFilter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
@@ -12,7 +12,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
-public class CpuUtilizationMean {
+public class PeakUtilizationRAM {
 
     public void calculate(String start, String end) throws Exception {
 
@@ -21,13 +21,13 @@ public class CpuUtilizationMean {
         conf.setIfUnset("end_date", end);
 
         String inputPath = "hdfs://hadoop-master:9000/data/processed";
-        String outputPath = "hdfs://hadoop-master:9000/output/MeanCPU"+ start + end + ".log";
+        String outputPath = "hdfs://hadoop-master:9000/output/PeakRAM"+ start + end + ".log";
 
-        Job job = Job.getInstance(conf, "Mean CPU Utilization");
-        job.setJarByClass(CpuUtilizationMean.class);
-        job.setMapperClass(CPUMapper.class);
-        job.setCombinerClass(MeanReducer.class);
-        job.setReducerClass(MeanReducer.class);
+        Job job = Job.getInstance(conf, "Peak RAM Utilization");
+        job.setJarByClass(PeakUtilizationRAM.class);
+        job.setMapperClass(RAMMapper.class);
+        job.setCombinerClass(PeakReducer.class);
+        job.setReducerClass(PeakReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
 

@@ -1,6 +1,6 @@
 //package Controllers;
 //
-//import Services.Query;
+//import Services.SeparateServices.Query;
 //
 //import org.springframework.web.bind.annotation.*;
 //

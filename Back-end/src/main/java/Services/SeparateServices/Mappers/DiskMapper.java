@@ -1,4 +1,4 @@
-package Services.Mappers;
+package Services.SeparateServices.Mappers;
 
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 
-public class RAMMapper extends Mapper<Object, Text, Text, DoubleWritable> {
+public class DiskMapper extends Mapper<Object, Text, Text, DoubleWritable> {
 
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException{
@@ -27,7 +27,7 @@ public class RAMMapper extends Mapper<Object, Text, Text, DoubleWritable> {
                 JSONObject obj = (JSONObject) jsonParser.parse(s);
                 service = obj.getAsString("ServiceName");
 
-                RAM = (JSONObject)obj.get("RAM");
+                RAM = (JSONObject)obj.get("Disk");
                 free = (double) RAM.getAsNumber("Free");
                 total = (double) RAM.getAsNumber("Total");
                 context.write(new Text(service), new DoubleWritable((total - free)/total));

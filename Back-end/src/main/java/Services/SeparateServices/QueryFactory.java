@@ -1,8 +1,8 @@
-package Services;
+package Services.SeparateServices;
 
-import Services.MeanQueries.CpuUtilizationMean;
-import Services.MeanQueries.DiskUtilizationMean;
-import Services.MeanQueries.RAMUtilizationMean;
+import Services.SeparateServices.MeanQueries.CpuUtilizationMean;
+import Services.SeparateServices.MeanQueries.DiskUtilizationMean;
+import Services.SeparateServices.MeanQueries.RAMUtilizationMean;
 import net.minidev.json.JSONObject;
 
 public class QueryFactory {

@@ -1,8 +1,8 @@
-package Services.PeakQueries;
+package Services.SeparateServices.PeakQueries;
 
-import Services.Mappers.DiskMapper;
-import Services.Reducers.PeakReducer;
-import Services.Proxy.WindowFilter;
+import Services.SeparateServices.Mappers.DiskMapper;
+import Services.SeparateServices.Reducers.PeakReducer;
+import Services.SeparateServices.Proxy.WindowFilter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;

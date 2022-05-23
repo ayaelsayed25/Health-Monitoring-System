@@ -1,4 +1,4 @@
-package Services.Reducers;
+package Services.SeparateServices.Reducers;
 
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
@@ -6,15 +6,17 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 
-public class PeakReducer  extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+public class MeanReducer  extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
 
     public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
-        double max = 0;
+        double sum = 0;
+        int i = 0;
 
         for (DoubleWritable val : values) {
-            if(max < val.get())
-                max = val.get();
+            sum += val.get();
+            i++;
         }
-        context.write(key, new DoubleWritable(max));
+        DoubleWritable mean = new DoubleWritable(sum / i);
+        context.write(key, mean);
     }
 }

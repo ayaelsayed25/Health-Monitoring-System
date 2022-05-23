@@ -1,4 +1,4 @@
-package Services;
+package Services.SeparateServices;
 
 
 public class Query {
