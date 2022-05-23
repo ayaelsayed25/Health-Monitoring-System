@@ -18,10 +18,10 @@ import java.sql.SQLException;
 public class Runner {
 
     public void jobRun () throws IOException, InterruptedException, ClassNotFoundException, SQLException {
-        Class.forName("org.duckdb.DuckDBDriver");
+//        Class.forName("org.duckdb.DuckDBDriver");
 
         Configuration conf = new Configuration();
-        Connection conn = DriverManager.getConnection("jdbc:duckdb:");
+//        Connection conn = DriverManager.getConnection("jdbc:duckdb:");
         conf.setIfUnset("start_date", "01-01-2023");
         conf.setIfUnset("end_date", "01-01-2023");
         String inputPath = "hdfs://hadoop-master:9000/processed";
