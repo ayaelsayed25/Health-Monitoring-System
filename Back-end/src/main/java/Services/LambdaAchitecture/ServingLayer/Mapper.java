@@ -21,12 +21,12 @@ public class Mapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Tex
         double ram = (totalRAM - freeRAM)/totalRAM;
         double disk = (totalDisk - freeDisk)/totalDisk;
 
-        String newValue = data[2] + "," + ram + "," + disk;
+        String newValue = data[2] + "," + ram + "," + disk + "," + data[0];
         Text writable = new Text(newValue);
 
-        Text dateService = new Text(timestamp + "," + data[0]);
+        Text date = new Text(timestamp);
 
-        context.write(dateService, writable);
+        context.write(date, writable);
 
     }
 }

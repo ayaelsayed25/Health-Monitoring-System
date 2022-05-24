@@ -4,6 +4,8 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+
 
 import java.io.IOException;
 
@@ -14,9 +16,8 @@ public class Reducer extends org.apache.hadoop.mapreduce.Reducer<Text, Text, Voi
             "\"namespace\" : \"BatchLayer\"," +
             "\"name\" : \"Day\"," +
             "\"fields\" : [" +
-            "{ \"name\" : \"Minute\", \"type\": \"int\" }, " +
-            "{ \"name\" : \"Service\", \"type\": \"string\" }," +
-            "{ \"name\" : \"MessageCount\", \"type\": \"int\" }," +
+            "{ \"name\" : \"Minute\",             \"type\": \"int\" }, " +
+            "{ \"name\" : \"MessageCount\",       \"type\": \"int\" }," +
             "{ \"name\" : \"CpuUtilizationMean\", \"type\": \"double\" }," +
             "{ \"name\" : \"DiskUtilizationMean\",\"type\": \"double\" }," +
             "{ \"name\" : \"RamUtilizationMean\", \"type\": \"double\" }," +
@@ -27,17 +28,20 @@ public class Reducer extends org.apache.hadoop.mapreduce.Reducer<Text, Text, Voi
     private final Schema mySchema =  new Schema.Parser().parse(schema);
     private final GenericRecord myGenericRecord = new GenericData.Record(mySchema);
 
+    private MultipleOutputs mos;
+    public void setup(Context context) {
 
+        mos = new MultipleOutputs(context);
+    }
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 
-        System.out.println("HIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-        int messageCount = 0;
-        double cpuUtilizationMean = 0;
-        double diskUtilizationMean = 0;
-        double ramUtilizationMean = 0;
-        double cpuUtilizationPeak = 0;
-        double diskUtilizationPeak = 0;
-        double ramUtilizationPeak = 0;
+        int[] messageCount = new int[4];
+        double[] cpuUtilizationMean = new double[4];
+        double[] diskUtilizationMean = new double[4];
+        double[] ramUtilizationMean = new double[4];
+        double[] cpuUtilizationPeak = new double[4];
+        double[] diskUtilizationPeak = new double[4];
+        double[] ramUtilizationPeak = new double[4];
 
 
         for (Text val : values) {
@@ -46,43 +50,46 @@ public class Reducer extends org.apache.hadoop.mapreduce.Reducer<Text, Text, Voi
             double cpu = Double.parseDouble(data[0]);
             double ram = Double.parseDouble(data[1]);
             double disk = Double.parseDouble(data[2]);
+            int service = Integer.parseInt(data[3].substring(8)) - 1;
 
-            messageCount += 1;
+            messageCount[service] += 1;
 
-            cpuUtilizationMean += cpu;
-            diskUtilizationMean += disk;
-            ramUtilizationMean += ram;
+            cpuUtilizationMean[service] += cpu;
+            diskUtilizationMean[service] += disk;
+            ramUtilizationMean[service] += ram;
 
-            cpuUtilizationPeak = Math.max(cpuUtilizationPeak, cpu);
-            diskUtilizationPeak = Math.max(diskUtilizationPeak, disk);
-            ramUtilizationPeak = Math.max(ramUtilizationPeak, ram);
+            cpuUtilizationPeak[service] = Math.max(cpuUtilizationPeak[service], cpu);
+            diskUtilizationPeak[service] = Math.max(diskUtilizationPeak[service], disk);
+            ramUtilizationPeak[service] = Math.max(ramUtilizationPeak[service], ram);
 
         }
-        cpuUtilizationMean /= messageCount;
-        diskUtilizationMean /= messageCount;
-        ramUtilizationMean /= messageCount;
-
         int hours = Integer.parseInt(key.toString().substring(11, 13)) * 60;
         int minutes = hours + Integer.parseInt(key.toString().substring(14, 16));
 
-        myGenericRecord.put("Minute", minutes);
-        myGenericRecord.put("Service", key.toString().substring(25));
-        System.out.println( key.toString().substring(25));
-        myGenericRecord.put("MessageCount", messageCount);
-        myGenericRecord.put("CpuUtilizationMean", cpuUtilizationMean);
-        myGenericRecord.put("DiskUtilizationMean", diskUtilizationMean);
-        myGenericRecord.put("RamUtilizationMean", ramUtilizationMean);
-        myGenericRecord.put("CpuUtilizationPeak", cpuUtilizationPeak);
-        myGenericRecord.put("DiskUtilizationPeak", diskUtilizationPeak);
-        myGenericRecord.put("RamUtilizationPeak", ramUtilizationPeak);
+        for (int i = 0; i < 4; i++) {
 
-//        String value = messageCount + "," + cpuUtilizationMean + "," +
-//                diskUtilizationMean + "," + ramUtilizationMean + "," +
-//                cpuUtilizationPeak + "," + diskUtilizationPeak + "," +
-//                ramUtilizationPeak;
-//
-//        Text writable = new Text(value);
+            cpuUtilizationMean[i] /= messageCount[i];
+            diskUtilizationMean[i] /= messageCount[i];
+            ramUtilizationMean[i] /= messageCount[i];
 
-        context.write(null, myGenericRecord);
+            myGenericRecord.put("Minute", minutes);
+            myGenericRecord.put("MessageCount", messageCount[i]);
+            myGenericRecord.put("CpuUtilizationMean", cpuUtilizationMean[i]);
+            myGenericRecord.put("DiskUtilizationMean", diskUtilizationMean[i]);
+            myGenericRecord.put("RamUtilizationMean", ramUtilizationMean[i]);
+            myGenericRecord.put("CpuUtilizationPeak", cpuUtilizationPeak[i]);
+            myGenericRecord.put("DiskUtilizationPeak", diskUtilizationPeak[i]);
+            myGenericRecord.put("RamUtilizationPeak", ramUtilizationPeak[i]);
+
+            mos.write("parquet", null, myGenericRecord,
+                    key.toString().substring(0, 10) + "_" + (i+1));
+
+        }
     }
+
+    public void cleanup(Context context) throws IOException, InterruptedException {
+        mos.close();
+    }
+
+
 }
