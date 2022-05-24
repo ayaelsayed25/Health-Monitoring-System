@@ -1,4 +1,4 @@
-package Services.BatchLayer;
+package Services.LambdaAchitecture.ServingLayer;
 
 import org.apache.avro.Schema;
 import org.apache.hadoop.conf.Configuration;

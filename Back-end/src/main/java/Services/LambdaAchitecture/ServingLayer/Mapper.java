@@ -1,4 +1,4 @@
-package Services.BatchLayer;
+package Services.LambdaAchitecture.ServingLayer;
 
 import org.apache.hadoop.io.Text;
 

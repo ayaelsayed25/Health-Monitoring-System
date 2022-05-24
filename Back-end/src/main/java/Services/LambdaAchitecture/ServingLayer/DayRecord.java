@@ -1,4 +1,4 @@
-package Services.BatchLayer;
+package Services.LambdaAchitecture.ServingLayer;
 
 public class DayRecord {
     private int minute;                         // 4 Bytes * 3 = 12B

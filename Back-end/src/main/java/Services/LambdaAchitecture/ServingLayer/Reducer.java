@@ -1,9 +1,8 @@
-package Services.BatchLayer;
+package Services.LambdaAchitecture.ServingLayer;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package Services.BatchLayer;
+package Services.LambdaAchitecture.ServingLayer;
 
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.lib.db.DBWritable;

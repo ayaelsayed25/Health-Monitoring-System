@@ -1,7 +1,3 @@
-import Services.BatchLayer.Runner;
-import Services.SeparateServices.MeanQueries.CpuUtilizationMean;
-
-import java.io.IOException;
 import java.sql.*;
 
 public class Try {
