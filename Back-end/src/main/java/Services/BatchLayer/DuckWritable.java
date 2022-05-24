@@ -23,6 +23,21 @@ public class DuckWritable implements Writable, DBWritable {
     private double diskUtilizationPeak = 0;
     private double ramUtilizationPeak = 0;
 
+    public DuckWritable(DayRecord record){
+        this.cpuUtilizationMean = record.getCpuUtilizationMean();
+        this.diskUtilizationMean = record.getDiskUtilizationMean();
+        this.minute = record.getMinute();
+        this.service = record.getService();
+        this.messageCount = record.getMessageCount();
+        this.cpuUtilizationMean = record.getCpuUtilizationMean();
+        this.diskUtilizationMean = record.getDiskUtilizationMean();
+        this.ramUtilizationMean = record.getRamUtilizationMean();
+        this.cpuUtilizationPeak = record.getCpuUtilizationPeak();
+        this.diskUtilizationPeak = record.getDiskUtilizationPeak();
+        this.ramUtilizationPeak = record.getRamUtilizationPeak();
+
+    }
+
     public void write(DataOutput out) throws IOException {
         out.writeInt(minute);
         out.writeInt(service);

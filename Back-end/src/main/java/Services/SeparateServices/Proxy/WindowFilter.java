@@ -20,7 +20,7 @@ public class WindowFilter  extends Configured implements PathFilter {
     @Override
     public boolean accept(Path path) {
         String f = path.toString();
-        if (f.substring(f.length() - 4).compareTo(".log") != 0) {
+        if (f.substring(f.length() - 4).compareTo(".csv") != 0) {
             return true;
         }
 

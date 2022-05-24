@@ -1,18 +1,16 @@
 package Services.BatchLayer;
 
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
 
-public class Mapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, KeyWritable, ArrayWritable> {
+public class Mapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Text, Text> {
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 
         String[] data = value.toString().split(",", -1);
 
         String timestamp = data[1];
-        String dateTime = timestamp.substring(0, 16);
 
         double totalRAM = Double.parseDouble(data[3]);
         double freeRAM = Double.parseDouble(data[4]);
@@ -23,14 +21,12 @@ public class Mapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Key
         double ram = (totalRAM - freeRAM)/totalRAM;
         double disk = (totalDisk - freeDisk)/totalDisk;
 
-        String[] array = {data[2], Double.toString(ram), Double.toString(disk)};
-        ArrayWritable writable = new ArrayWritable(array);
+        String newValue = data[2] + "," + ram + "," + disk;
+        Text writable = new Text(newValue);
 
-        KeyWritable keyWritable = new KeyWritable();
-        keyWritable.setServiceName(new Text(data[0]));
-        keyWritable.setDateTime(new Text(dateTime));
+        Text dateService = new Text(timestamp + "," + data[0]);
 
-        context.write(keyWritable, writable);
+        context.write(dateService, writable);
 
     }
 }
