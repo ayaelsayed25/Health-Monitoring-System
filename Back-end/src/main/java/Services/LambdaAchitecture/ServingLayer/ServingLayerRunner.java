@@ -43,12 +43,12 @@ public class ServingLayerRunner {
 
         String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath + ".csv";
         String outputPath = "/home/hadoop/Health-Monitoring-System/Back-end/batchViews/" + filePath;
+//        String outputPath = "batchViews/" + filePath + "/";
 
         java.nio.file.Path path = Paths.get(outputPath);
 
         if (Files.exists(path))
             FileUtils.deleteDirectory(new File(outputPath));
-
 
         Job job = Job.getInstance(conf, "Batch View Creation");
         job.setJarByClass(ServingLayerRunner.class);
@@ -67,6 +67,6 @@ public class ServingLayerRunner {
         FileInputFormat.addInputPath(job, new Path(inputPath));
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+        job.waitForCompletion(true);
     }
 }

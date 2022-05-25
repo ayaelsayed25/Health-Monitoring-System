@@ -3,6 +3,7 @@ package Services.LambdaAchitecture.ServingLayer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
@@ -83,7 +84,6 @@ public class Reducer extends org.apache.hadoop.mapreduce.Reducer<Text, Text, Voi
 
             mos.write("parquet", null, myGenericRecord,
                     key.toString().substring(0, 10) + "_" + (i+1));
-
         }
     }
 
