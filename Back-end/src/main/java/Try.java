@@ -16,6 +16,7 @@ public class Try {
             ServingLayerRunner runner = new ServingLayerRunner();
             runner.jobRun(f.getName().substring(0, 10));
         }
+//        System.out.printf("SELECT * FROM '%s';%n", "path");
 //        runner.jobRun("01-01-2023.csv");
 //        Runner runner = new Runner();
 //        runner.beepForAnHour();
