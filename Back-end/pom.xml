@@ -23,7 +23,7 @@
 	</repositories>
 
 	<properties>
-		<java.version>11</java.version>
+<!--		<java.version>11</java.version>-->
 		<scala.version>2.11.8</scala.version>
 		<scala.compat.version>2.11.8</scala.compat.version>
 		<scala.binary.version>2.11</scala.binary.version>
