@@ -82,7 +82,7 @@ public class Reducer extends org.apache.hadoop.mapreduce.Reducer<Text, Text, Voi
             myGenericRecord.put("DiskUtilizationPeak", diskUtilizationPeak[i]);
             myGenericRecord.put("RamUtilizationPeak", ramUtilizationPeak[i]);
 
-            mos.write("parquet", NullWritable.get(), myGenericRecord,
+            mos.write("parquet", null, myGenericRecord,
                     key.toString().substring(0, 10) + "_" + (i+1));
         }
     }

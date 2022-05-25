@@ -43,6 +43,7 @@ public class ServingLayerRunner {
 
         String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath + ".csv";
         String outputPath = "/home/hadoop/Health-Monitoring-System/Back-end/batchViews/" + filePath;
+//        String outputPath = "batchViews/" + filePath + "/";
 
         java.nio.file.Path path = Paths.get(outputPath);
 

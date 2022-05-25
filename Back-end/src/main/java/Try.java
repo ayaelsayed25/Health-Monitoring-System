@@ -12,8 +12,10 @@ public class Try {
         assert files != null;
         for (File f : files)
         {
-            System.out.println(f.getName());
+//            System.out.println(f.getName());
             ServingLayerRunner runner = new ServingLayerRunner();
+//        runner.jobRun("26-01-2024");
+//        runner.jobRun("01-01-2023");
             runner.jobRun(f.getName().substring(0, 10));
         }
 //        ServingLayerRunner runner = new ServingLayerRunner();
