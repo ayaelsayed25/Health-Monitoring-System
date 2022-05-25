@@ -7,11 +7,12 @@ public class Try {
     public static void main(String[] args) throws Exception {
 
         // Create Batch Views
-        File file = new File("/home/user/Documents/GitHub/Health-Monitoring-System/Back-end/src/main/java/output");
+        File file = new File("/home/hadoop/health_messages_csv");
         File[] files = file.listFiles();
         assert files != null;
         for (File f : files)
         {
+            System.out.println(f.getName());
             ServingLayerRunner runner = new ServingLayerRunner();
             runner.jobRun(f.getName().substring(0, 10));
         }
