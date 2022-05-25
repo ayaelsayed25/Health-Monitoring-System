@@ -36,7 +36,7 @@ public class ServingLayerRunner {
                     "]}";
     private final Schema mySchema =  new Schema.Parser().parse(schema);
 
-    public void jobRun (String filePath) throws IOException, InterruptedException, ClassNotFoundException {
+    public boolean jobRun (String filePath) throws IOException, InterruptedException, ClassNotFoundException {
 
 
         Configuration conf = new Configuration();
@@ -67,6 +67,6 @@ public class ServingLayerRunner {
         FileInputFormat.addInputPath(job, new Path(inputPath));
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
-//        job.waitForCompletion(true);
+        return job.waitForCompletion(true);
     }
 }
