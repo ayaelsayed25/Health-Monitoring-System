@@ -23,6 +23,7 @@ public final class SparkStreaming {
                 .builder()
                 .appName("JavaWordCount")
                 .master("local")
+                .config("spark.testing.memory", "2147480000")
                 .getOrCreate();
 
         JavaRDD<String> lines = spark.read().textFile("hello.txt").javaRDD();
