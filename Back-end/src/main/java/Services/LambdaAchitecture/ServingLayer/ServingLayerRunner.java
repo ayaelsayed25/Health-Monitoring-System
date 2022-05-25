@@ -67,6 +67,6 @@ public class ServingLayerRunner {
         FileInputFormat.addInputPath(job, new Path(inputPath));
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
-        job.waitForCompletion(true);
+//        job.waitForCompletion(true);
     }
 }
