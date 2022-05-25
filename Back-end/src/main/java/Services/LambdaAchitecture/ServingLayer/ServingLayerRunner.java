@@ -42,7 +42,7 @@ public class ServingLayerRunner {
         Configuration conf = new Configuration();
 
         String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath + ".csv";
-        String outputPath = "/home/user/Documents/GitHub/Health-Monitoring-System/Back-end/src/main/java/output/" + filePath;
+        String outputPath = "/home/hadoop/Health-Monitoring-System/batchViews/" + filePath;
 
         if (Files.exists(java.nio.file.Path.of(outputPath)))
             FileUtils.deleteDirectory(new File(outputPath));
