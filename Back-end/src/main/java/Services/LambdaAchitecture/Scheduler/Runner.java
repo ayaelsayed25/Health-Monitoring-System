@@ -23,7 +23,7 @@ public class Runner {
             System.out.println(pattern);
             String dateInString = new SimpleDateFormat(pattern).format(new Date());
             try {
-                runner.jobRun(dateInString);
+                runner.jobRun();
             } catch (IOException | InterruptedException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

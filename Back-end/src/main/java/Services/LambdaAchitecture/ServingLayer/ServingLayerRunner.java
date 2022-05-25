@@ -36,37 +36,42 @@ public class ServingLayerRunner {
                     "]}";
     private final Schema mySchema =  new Schema.Parser().parse(schema);
 
-    public boolean jobRun (String filePath) throws IOException, InterruptedException, ClassNotFoundException {
-
+    public void jobRun () throws IOException, InterruptedException, ClassNotFoundException {
 
         Configuration conf = new Configuration();
 
-        String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath + ".csv";
-        String outputPath = "/home/hadoop/Health-Monitoring-System/Back-end/batchViews/" + filePath;
+        File file = new File("/home/hadoop/health_messages_csv");
+        File[] files = file.listFiles();
+        assert files != null;
+        for (File f : files)
+        {
+            String filePath = f.getName().substring(0, 10);
+            String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath + ".csv";
+            String outputPath = "/home/hadoop/Health-Monitoring-System/Back-end/batchViews/" + filePath;
 
-        java.nio.file.Path path = Paths.get(outputPath);
+            java.nio.file.Path path = Paths.get(outputPath);
 
-        if (Files.exists(path))
-            FileUtils.deleteDirectory(new File(outputPath));
+            if (Files.exists(path))
+                FileUtils.deleteDirectory(new File(outputPath));
 
+            Job job = Job.getInstance(conf, "Batch View Creation");
+            job.setJarByClass(ServingLayerRunner.class);
+            job.setMapperClass(Mapper.class);
+            job.setReducerClass(Reducer.class);
+            job.setMapOutputKeyClass(Text.class);
+            job.setMapOutputValueClass(Text.class);
+            job.setOutputKeyClass(NullWritable.class);
+            job.setOutputValueClass(Group.class);
+            job.setOutputFormatClass(AvroParquetOutputFormat.class);
+            AvroParquetOutputFormat.setSchema(job, mySchema);
 
-        Job job = Job.getInstance(conf, "Batch View Creation");
-        job.setJarByClass(ServingLayerRunner.class);
-        job.setMapperClass(Mapper.class);
-        job.setReducerClass(Reducer.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(Text.class);
-        job.setOutputKeyClass(NullWritable.class);
-        job.setOutputValueClass(Group.class);
-        job.setOutputFormatClass(AvroParquetOutputFormat.class);
-        AvroParquetOutputFormat.setSchema(job, mySchema);
+            MultipleOutputs.addNamedOutput(job, "parquet", AvroParquetOutputFormat.class,
+                    NullWritable.class, Group.class);
 
-        MultipleOutputs.addNamedOutput(job, "parquet", AvroParquetOutputFormat.class,
-                NullWritable.class, Group.class);
+            FileInputFormat.addInputPath(job, new Path(inputPath));
+            FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
-        FileInputFormat.addInputPath(job, new Path(inputPath));
-        FileOutputFormat.setOutputPath(job, new Path(outputPath));
-
-        return job.waitForCompletion(true);
+            job.waitForCompletion(true);
+        }
     }
 }
