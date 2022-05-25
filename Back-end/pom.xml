@@ -27,37 +27,33 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<spark.version>2.1.1</spark.version>
 		<scala.version>2.11.8</scala.version>
 		<scala.compat.version>2.11.8</scala.compat.version>
 		<scala.binary.version>2.11</scala.binary.version>
-		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
+
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-core_2.13</artifactId>
-			<version>3.2.1</version>
+			<artifactId>spark-core_2.11</artifactId>
+			<version>2.1.0</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-streaming -->
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-streaming_2.13</artifactId>
-			<version>3.2.1</version>
+			<artifactId>spark-sql_2.11</artifactId>
+			<version>2.1.0</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-sql_2.13</artifactId>
-			<version>3.2.1</version>
+			<artifactId>spark-streaming_2.11</artifactId>
+			<version>2.1.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
@@ -229,8 +225,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
