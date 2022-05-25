@@ -7,17 +7,17 @@ public class Try {
     public static void main(String[] args) throws Exception {
 
         // Create Batch Views
-//        File file = new File("/home/hadoop/health_messages_csv");
-//        File[] files = file.listFiles();
-//        assert files != null;
-//        for (File f : files)
-//        {
-//            System.out.println(f.getName());
-//            ServingLayerRunner runner = new ServingLayerRunner();
-//            runner.jobRun(f.getName().substring(0, 10));
-//        }
-        ServingLayerRunner runner = new ServingLayerRunner();
-        runner.jobRun();
+        File file = new File("/home/hadoop/health_messages_csv");
+        File[] files = file.listFiles();
+        assert files != null;
+        for (File f : files)
+        {
+            System.out.println(f.getName());
+            ServingLayerRunner runner = new ServingLayerRunner();
+            runner.jobRun(f.getName().substring(0, 10));
+        }
+//        ServingLayerRunner runner = new ServingLayerRunner();
+//        runner.jobRun();
 //        System.out.printf("SELECT * FROM '%s';%n", "path");
 //        runner.jobRun("01-01-2023.csv");
 //        Runner runner = new Runner();
