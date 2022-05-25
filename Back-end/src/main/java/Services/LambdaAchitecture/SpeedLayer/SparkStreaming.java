@@ -1,47 +1,42 @@
 package Services.LambdaAchitecture.SpeedLayer;
+
 import org.apache.spark.api.java.function.FlatMapFunction;
-import org.apache.spark.sql.*;
-import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.streaming.ProcessingTime;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Encoders;
+import org.apache.spark.sql.Row;
 import org.apache.spark.sql.streaming.StreamingQuery;
-import org.apache.spark.sql.streaming.StreamingQueryException;
-import org.apache.spark.sql.streaming.Trigger;
+import scala.Tuple2;
+
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.sql.SparkSession;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.regex.Pattern;
 
-public class SparkStreaming {
-    public static void main(String args[]) throws StreamingQueryException {
-        SparkSession spark = SparkSession.builder().appName("JavaStructuredNetworkWordCount")
-                .master("local[*]")
-                .appName("Java Spark SQL basic example")
-                .config("spark.driver.host","127.0.0.1")
-                .config("spark.driver.bindAddress","127.0.0.1")
+public final class SparkStreaming {
+    private static final Pattern SPACE = Pattern.compile(" ");
+
+    public static void main(String[] args) throws Exception {
+        SparkSession spark = SparkSession
+                .builder()
+                .appName("JavaWordCount")
+                .master("local")
                 .getOrCreate();
-        Dataset<Row> lines = spark
-                .readStream()
-                .format("socket")
-                .option("host", "localhost")
-                .option("port", 9999)
-                .load();
-        // Split the lines into words
 
+        JavaRDD<String> lines = spark.read().textFile("hello.txt").javaRDD();
 
-// Split the lines into words
-        Dataset<String> words = lines
-                .as(Encoders.STRING())
-                .flatMap((FlatMapFunction<String, String>) x -> Arrays.asList(x.split(" ")).iterator(), Encoders.STRING());
+        JavaRDD<String> words = lines.flatMap(s -> Arrays.asList(SPACE.split(s)).iterator());
 
-// Generate running word count
-        Dataset<Row> wordCounts = words.groupBy("value").count();
+        JavaPairRDD<String, Integer> ones = words.mapToPair(s -> new Tuple2<>(s, 1));
 
-        // Start running the query that prints the running counts to the console
-        StreamingQuery query = wordCounts.writeStream()
-                .outputMode("complete")
-                .format("console")
-                .start();
+        JavaPairRDD<String, Integer> counts = ones.reduceByKey((i1, i2) -> i1 + i2);
 
-        query.awaitTermination();
+        List<Tuple2<String, Integer>> output = counts.collect();
+        for (Tuple2<?,?> tuple : output) {
+            System.out.println(tuple._1() + ": " + tuple._2());
+        }
+        spark.stop();
     }
-
 }
