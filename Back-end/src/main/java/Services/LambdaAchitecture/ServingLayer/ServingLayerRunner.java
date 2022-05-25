@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.security.acl.Group;
 
 
-public class Runner {
+public class ServingLayerRunner {
 
     private final String schema = "{\n" +
                     "\"type\" : \"record\"," +
@@ -38,11 +38,13 @@ public class Runner {
 
         Configuration conf = new Configuration();
 
+        //TODO: Remove Folder, If exists
+
         String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath;
         String outputPath = "/home/user/Documents/GitHub/Health-Monitoring-System/Back-end/src/main/java/output/out1";
 
         Job job = Job.getInstance(conf, "Mean CPU Utilization");
-        job.setJarByClass(Runner.class);
+        job.setJarByClass(ServingLayerRunner.class);
         job.setMapperClass(Mapper.class);
         job.setReducerClass(Reducer.class);
         job.setMapOutputKeyClass(Text.class);

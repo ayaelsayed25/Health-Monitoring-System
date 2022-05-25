@@ -1,10 +1,21 @@
-import Services.LambdaAchitecture.ServingLayer.Runner;
+import Services.LambdaAchitecture.Scheduler.Runner;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Try {
+
+
     public static void main(String[] args) throws Exception {
+
         Runner runner = new Runner();
-        runner.jobRun("01-01-2023.csv");
+        runner.createBatchView();
+//        runner.jobRun("01-01-2023.csv");
+//        Runner runner = new Runner();
+//        runner.beepForAnHour();
+//        String pattern = "dd-MM-yyyy";
+//        String dateInString =new SimpleDateFormat(pattern).format(new Date());
+//        System.out.println(dateInString);
 //        Class.forName("org.duckdb.DuckDBDriver");
 //        Connection conn = DriverManager.getConnection("jdbc:duckdb:");
 //        Statement stmt = conn.createStatement();
