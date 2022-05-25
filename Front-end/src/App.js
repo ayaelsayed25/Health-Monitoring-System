@@ -12,18 +12,7 @@ function App() {
     margin: 100,
     width: 250
   };
- 
-  // const sportsData = [
-  //   { Id: 'query1', query: 'The mean-CPU utilization for each service' },
-  //   { Id: 'query2', query: 'The mean Disk utilization for each service' },
-  //   { Id: 'query3', query: 'The mean RAM utilization for each service' },
-  //   { Id: 'query4', query: 'The peak time of utilization for CPU' },
-  //   { Id: 'query5', query: 'The peak time of utilization for RAM' },
-  //   { Id: 'query6', query: 'The peak time of utilization for Disk' },
-  //   { Id: 'query7', query: 'The count of health messages received for each service' }
-  // ];
-  
-  // const dateValue = new Date(new Date().getFullYear(), new Date().getMonth(), 14);
+
   const [dataTable, setDataTable] = useState([]);
   const column = [
     { heading: 'Service Name', value: 'name' },
@@ -52,9 +41,8 @@ function App() {
     //   this.setState({ errorMessage: error.message });
     //   console.error('There was an error!', error);
     // });
-    const response = await fetch('http://192.168.1.10:8080/query');
-    const body = await response.json();
-    console.log(body);
+    await axios.get(`http://localhost:8082/query`)
+    .then((res) => console.log(res))
   }  
 
   return (
@@ -84,32 +72,6 @@ function App() {
         <div>
           <DateTimePicker onChange={setEnd} value={end} />
         </div>
-{/* 
-        <DateTimePicker
-          renderInput={(props) => <TextField {...props} />}
-          label="Start"
-          value={dateValue}
-          onChange={(newValue) => {
-            setValue(newValue);
-          }}
-        />
-
-        <DateTimePicker
-          renderInput={(props) => <TextField {...props} />}
-          label="End"
-          value={dateValue}
-          onChange={(newValue) => {
-            setValue(newValue);
-          }}
-        /> */}
-
-
-        {/* <DatePickerComponent
-          id='end' 
-          placeholder="Enter end Date"
-          value={dateValue}
-          format="dd-MM-yyyy"
-        /> */}
 
 
         <button onClick={() => getData()}>Get Data</button> 
