@@ -15,6 +15,7 @@ import org.apache.parquet.example.data.Group;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 public class ServingLayerRunner {
@@ -43,7 +44,9 @@ public class ServingLayerRunner {
         String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath + ".csv";
         String outputPath = "/home/hadoop/Health-Monitoring-System/Back-end/batchViews/" + filePath;
 
-        if (Files.exists(java.nio.file.Path.of(outputPath)))
+        java.nio.file.Path path = Paths.get(outputPath);
+
+        if (Files.exists(path))
             FileUtils.deleteDirectory(new File(outputPath));
 
 
