@@ -1,15 +1,21 @@
-import Services.LambdaAchitecture.Scheduler.Runner;
+import Services.LambdaAchitecture.ServingLayer.ServingLayerRunner;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.File;
 
 public class Try {
 
-
     public static void main(String[] args) throws Exception {
 
-        Runner runner = new Runner();
-        runner.createBatchView();
+        // Create Batch Views
+        File file = new File("/home/hadoop/health_messages_csv");
+        File[] files = file.listFiles();
+        assert files != null;
+        for (File f : files)
+        {
+            System.out.println(f.getName());
+            ServingLayerRunner runner = new ServingLayerRunner();
+            runner.jobRun(f.getName().substring(0, 10));
+        }
 //        runner.jobRun("01-01-2023.csv");
 //        Runner runner = new Runner();
 //        runner.beepForAnHour();
@@ -28,7 +34,7 @@ public class Try {
 //        int minutes = hours + Integer.parseInt(s.substring(14, 16));
 //        System.out.println(minutes);
 //        System.out.println(s.substring(25));
-//        String s = "service-1";
-//        System.out.println(s.substring(8));
+//        String s = "01-01-2023.csv";
+//        System.out.println(s.substring(0, 10));
     }
 }

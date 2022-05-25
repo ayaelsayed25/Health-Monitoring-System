@@ -1,19 +1,19 @@
 package Controllers;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+import java.text.ParseException;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
 @CrossOrigin
+@RestController
 class Controller {
-
-    @CrossOrigin
-    @GetMapping("/query")
-    public String getInfo() {
-        System.out.println("dateTime");
-        return "hi";
+    UserService userService;
+    Controller() {
+        userService = new UserService();
     }
-
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.POST, value = "/query")
+    public String getInfo(@RequestBody Query query) throws ClassNotFoundException, SQLException, InterruptedException, ParseException {
+        return userService.processQuery(query);
+    }
 }

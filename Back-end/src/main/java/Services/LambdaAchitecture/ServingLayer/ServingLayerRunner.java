@@ -1,6 +1,7 @@
 package Services.LambdaAchitecture.ServingLayer;
 
 import org.apache.avro.Schema;
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
@@ -10,9 +11,11 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.parquet.avro.AvroParquetOutputFormat;
+import org.apache.parquet.example.data.Group;
 
+import java.io.File;
 import java.io.IOException;
-import java.security.acl.Group;
+import java.nio.file.Files;
 
 
 public class ServingLayerRunner {
@@ -38,12 +41,14 @@ public class ServingLayerRunner {
 
         Configuration conf = new Configuration();
 
-        //TODO: Remove Folder, If exists
+        String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath + ".csv";
+        String outputPath = "/home/user/Documents/GitHub/Health-Monitoring-System/Back-end/src/main/java/output/" + filePath;
 
-        String inputPath = "hdfs://hadoop-master:9000/try/health_messages_csv/" + filePath;
-        String outputPath = "/home/user/Documents/GitHub/Health-Monitoring-System/Back-end/src/main/java/output/out1";
+        if (Files.exists(java.nio.file.Path.of(outputPath)))
+            FileUtils.deleteDirectory(new File(outputPath));
 
-        Job job = Job.getInstance(conf, "Mean CPU Utilization");
+
+        Job job = Job.getInstance(conf, "Batch View Creation");
         job.setJarByClass(ServingLayerRunner.class);
         job.setMapperClass(Mapper.class);
         job.setReducerClass(Reducer.class);
