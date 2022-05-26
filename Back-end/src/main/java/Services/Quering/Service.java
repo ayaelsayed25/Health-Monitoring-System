@@ -52,7 +52,7 @@ public class Service implements Runnable {
                 "   CpuUtilizationPeak:  " + rs.getDouble(5) +
                 "   RamUtilizationPeak: " + rs.getDouble(6) +
                 "   DiskUtilizationPeak:  " + rs.getDouble(7);
-        System.out.println(result);
+//        System.out.println(result);
     }
 
     public String getResult() {
