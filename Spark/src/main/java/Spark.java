@@ -60,7 +60,7 @@ public final class Spark {
 //        }
 
 
-        String brokers =  "165.232.94.127:2181";
+        String brokers =  "localhost:2181";
         String groupId = "group1";
         String topics = "topic";
 
