@@ -6,6 +6,8 @@ public class Query {
     int End;
     int Start;
     String startDay;
+    String endDay;
+
 
     public String getStartDay() {
         return startDay;
@@ -23,17 +25,6 @@ public class Query {
         this.endDay = endDay;
     }
 
-    String endDay;
-
-    public String getStatment() {
-        return statment;
-    }
-
-    public void setStatment(String statment) {
-        this.statment = statment;
-    }
-
-    String statment;
 
     public int getEnd() {
         return End;
@@ -50,22 +41,6 @@ public class Query {
     public void setStart(int start) {
         Start = start;
     }
-
-
-
-    public String getQuery() {
-        return Query;
-    }
-
-    public void setQuery(String query) {
-        Query = query;
-    }
-
-    String Query;
-
-
-
-
 
 
 }

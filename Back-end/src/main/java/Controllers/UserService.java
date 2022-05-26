@@ -7,11 +7,9 @@ import java.text.ParseException;
 
 public class UserService {
 
-
-
     @ResponseBody
     public String processQuery(Query query) throws SQLException, InterruptedException, ClassNotFoundException, ParseException {
-        Response response=new Response();
-        return  response.getResponse(query.getStart(), query.getEnd(),query.getStartDay(),query.endDay,query.getStatment());
+        Response response = new Response();
+        return  response.getResponse(query.getStart(), query.getEnd(), query.getStartDay(), query.getEndDay());
     }
 }

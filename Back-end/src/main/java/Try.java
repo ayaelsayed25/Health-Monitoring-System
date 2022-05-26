@@ -1,23 +1,39 @@
+import Controllers.Query;
+import Controllers.UserService;
 import Services.LambdaAchitecture.ServingLayer.ServingLayerRunner;
 
 import java.io.File;
+import java.io.FileWriter;
 
 public class Try {
 
     public static void main(String[] args) throws Exception {
 
         // Create Batch Views
-        File file = new File("/home/hadoop/health_messages_csv");
-        File[] files = file.listFiles();
-        assert files != null;
-        for (File f : files)
-        {
-            System.out.println(f.getName());
-            ServingLayerRunner runner = new ServingLayerRunner();
-//        runner.jobRun("26-01-2024");
-//        runner.jobRun("01-01-2023");
-            runner.jobRun(f.getName().substring(0, 10));
-        }
+//        File file = new File("/home/hadoop/health_messages_csv");
+//        File[] files = file.listFiles();
+//        assert files != null;
+//        for (File f : files)
+//        {
+//            System.out.println(f.getName());
+//            ServingLayerRunner runner = new ServingLayerRunner();
+////        runner.jobRun("26-01-2024");
+////        runner.jobRun("01-01-2023");
+//            runner.jobRun(f.getName().substring(0, 10));
+//        }
+//        UserService userService = new UserService();
+//        Query query = new Query();
+//        query.setStartDay("01-01-2023");
+//        query.setEndDay("01-01-2023");
+//        query.setStart(0);
+//        query.setEnd(5);
+//        userService.processQuery(query);
+        FileWriter myWriter = new FileWriter("batchTime.txt");
+        int m = 90;
+        myWriter.write(m);
+        myWriter.close();
+
+
 //        ServingLayerRunner runner = new ServingLayerRunner();
 //        runner.jobRun();
 //        System.out.printf("SELECT * FROM '%s';%n", "path");
