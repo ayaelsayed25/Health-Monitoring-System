@@ -48,7 +48,7 @@ public class Try {
 
         for (int i = 0; i < 10000; i++) {
             int startMinutes = getRandomNumberUsingNextInt(0, 1439);
-            int increment = getRandomNumberUsingNextInt(0, 10);
+            int increment = getRandomNumberUsingNextInt(2, 5);
             int endMinutes = getRandomNumberUsingNextInt(startMinutes, startMinutes + increment + 1);
             int index = getRandomNumberUsingNextInt(0, 44);
 
