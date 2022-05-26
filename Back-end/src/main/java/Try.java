@@ -49,8 +49,8 @@ public class Try {
         for (int i = 0; i < 10000; i++) {
             int startMinutes = getRandomNumberUsingNextInt(0, 1439);
             int increment = getRandomNumberUsingNextInt(0, 10);
-            int endMinutes = getRandomNumberUsingNextInt(startMinutes, startMinutes + increment);
-            int index = getRandomNumberUsingNextInt(0,49);
+            int endMinutes = getRandomNumberUsingNextInt(startMinutes, startMinutes + increment + 1);
+            int index = getRandomNumberUsingNextInt(0, 49);
 
             query.setStartDay(dates[index]);
             query.setEndDay(dates[index]);
