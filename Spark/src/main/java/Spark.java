@@ -66,7 +66,7 @@ public final class Spark {
 
         // Create context with a 2 seconds batch interval
         SparkConf sparkConf = new SparkConf().setAppName("JavaDirectKafkaWordCount").setMaster("local")
-                .set("spark.driver.memory","471859200");
+                .set("spark.testing.memory", "2147480000");
         JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.seconds(2));
 
         Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
