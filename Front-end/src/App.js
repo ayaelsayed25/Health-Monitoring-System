@@ -23,27 +23,26 @@ function App() {
 
    
   async function getData (){
-    console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHh")
-    var parameters = {
-      startDate :start.toString(),
-      endDate : end.toString()
+    // console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHh")
+    // var parameters = {
+    //   startDate :start.toString(),
+    //   endDate : end.toString()
+    // }
+    var parameters={
+      Start : start.toString(),
+      End   : end.toString()
     }
-    // console.log(parameters)
 
-    // axios.post('http://localhost:8080/query', parameters)
 
-    var dateTime = JSON.stringify(parameters);
-    // const data = {foo:1, bar:2};
+    console.log(parameters)
 
-    // axios.get(`http://localhost:8080/query`)
-    // .then(response => console.log(response.data))
-    // .catch(error => {
-    //   this.setState({ errorMessage: error.message });
-    //   console.error('There was an error!', error);
-    // });
-    await axios.get(`http://localhost:8082/query`)
-    .then((res) => console.log(res))
-  }  
+    axios.post('http://167.172.39.122:8082/query', parameters)
+    .then(response =>  setDataTable(response.data))
+    .catch(error => {
+        this.setState({ errorMessage: error.message });
+        console.error('There was an error!', error);
+    });
+  }
 
   return (
 
@@ -51,20 +50,6 @@ function App() {
 
       <div style={divStyle} >
 
-        
-        {/* <ComboBoxComponent 
-          id='choice' 
-          placeholder='select a query'
-          dataSource={sportsData}
-          fields={{value:"Id", text:"query"}}
-        />
-
-        <DatePickerComponent  
-          id='start' 
-          placeholder="Enter start Date"
-          value={dateValue}
-          format="dd-MM-yyyy"
-        /> */}
         <div>
           <DateTimePicker onChange={setStart} value={start} />
         </div>
@@ -81,7 +66,8 @@ function App() {
       <Table data={dataTable} column={column} />
     </span>
    
-  );
-}
-
-export default App;
+   );
+  }
+  
+  export default App;
+  
