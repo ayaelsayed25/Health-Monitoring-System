@@ -102,7 +102,7 @@ public class Response {
             br = new BufferedReader(new FileReader("batchTime.txt"));
             this.realTimeLimit = Integer.parseInt(br.readLine());
             br.close();
-            System.out.println(realTimeLimit);
+//            System.out.println(realTimeLimit);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
