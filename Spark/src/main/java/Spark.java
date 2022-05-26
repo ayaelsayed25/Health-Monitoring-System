@@ -1,96 +1,112 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import org.apache.spark.sql.*;
+import org.apache.spark.sql.streaming.OutputMode;
+import org.apache.spark.sql.streaming.StreamingQuery;
+import org.apache.spark.sql.streaming.Trigger;
+import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.StructType;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
-import scala.Tuple2;
-
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
-
-import org.apache.spark.SparkConf;
-import org.apache.spark.streaming.api.java.*;
-import org.apache.spark.streaming.kafka010.ConsumerStrategies;
-import org.apache.spark.streaming.kafka010.KafkaUtils;
-import org.apache.spark.streaming.kafka010.LocationStrategies;
-import org.apache.spark.streaming.Durations;
-
-/**
- * Consumes messages from one or more topics in Kafka and does wordcount.
- * Usage: JavaDirectKafkaWordCount <brokers> <groupId> <topics>
- *   <brokers> is a list of one or more Kafka brokers
- *   <groupId> is a consumer group name to consume from topics
- *   <topics> is a list of one or more kafka topics to consume from
- *
- * Example:
- *    $ bin/run-example streaming.JavaDirectKafkaWordCount broker1-host:port,broker2-host:port \
- *      consumer-group topic1,topic2
- */
+import static org.apache.spark.sql.functions.*;
 
 public final class Spark {
     private static final Pattern SPACE = Pattern.compile(" ");
 
     public static void main(String[] args) throws Exception {
-//        if (args.length < 3) {
-//            System.err.println("Usage: JavaDirectKafkaWordCount <brokers> <groupId> <topics>\n" +
-//                    "  <brokers> is a list of one or more Kafka brokers\n" +
-//                    "  <groupId> is a consumer group name to consume from topics\n" +
-//                    "  <topics> is a list of one or more kafka topics to consume from\n\n");
-//            System.exit(1);
-//        }
+        //prepare spark session
+        SparkSession spark = SparkSession
+                .builder()
+                .appName("Speed Layer")
+                .master("local[*]")
+                .config("spark.driver.bindAddress", "127.0.0.1")
+                .getOrCreate();
+
+        //create json schema
+        StructType RAM = new StructType()
+                .add("Total", DataTypes.FloatType)
+                .add("Free", DataTypes.FloatType);
+        StructType Disk = new StructType()
+                .add("Total", DataTypes.FloatType)
+                .add("Free", DataTypes.FloatType);
+
+        StructType schema = new StructType()
+                .add("serviceName", DataTypes.StringType)
+                .add("Timestamp", DataTypes.TimestampType)
+                .add("CPU", DataTypes.FloatType)
+                .add("RAM", RAM)
+                .add("Disk", Disk);
+
+        //read stream from json file
+        Dataset<Row> rawData = spark.readStream()
+                .format("json")
+                .schema(schema)
+                .json("/home/sarah/Documents/streaming_dir");
+
+        StreamingQuery query = rawData.writeStream().queryName("stream")
+                .outputMode(OutputMode.Append())
+                .format("memory")
+                .trigger(Trigger.ProcessingTime(1_000))
+                .start();
+
+       Dataset<Row> data = spark.sql("SELECT * FROM stream");
+        //create realtime view
+        Dataset<Row> rawData2 = data.select(col("serviceName"), col("Timestamp"), col("CPU"),col("RAM.*"),
+                col("Disk.*"));
+        Dataset<Row> flattenedDS = rawData2.toDF("serviceName", "Timestamp", "CPU", "Total RAM","Free RAM","Total Disk","Free Disk");
+        final Column col_1 = functions.coalesce(flattenedDS.col("Total RAM"), functions.lit(0));
+        final Column col_2 = functions.coalesce(flattenedDS.col("Free RAM"), functions.lit(0));
+        final Column col_3 = functions.coalesce(flattenedDS.col("Total Disk"), functions.lit(0));
+        final Column col_4 = functions.coalesce(flattenedDS.col("Free Disk"), functions.lit(0));
+        Column ram_diff =  functions.abs(col_1.minus(col_2));
+        Column disk_diff =  functions.abs(col_3.minus(col_4));
+        Column utilization_ram = functions.abs(ram_diff.divide(col_1));
+        Column utilization_disk = functions.abs(disk_diff.divide(col_3));
+        flattenedDS = flattenedDS.withColumn("RAM Utilization", utilization_ram);
+        flattenedDS = flattenedDS.withColumn("Disk Utilization", utilization_disk);
+        flattenedDS = flattenedDS.drop("Total RAM", "Free RAM", "Total Disk", "Free Disk");
 
 
-        String brokers =  "188.166.84.58:9092";
-        String groupId = "group1";
-        String topics = "topic";
+        Dataset<Row> intervalsDS = flattenedDS
+                .withColumn("time", current_timestamp())
+                .withWatermark("time", "10 minutes")
+                .groupBy(window(flattenedDS.col("Timestamp"), "1 minutes"), flattenedDS.col("serviceName"))
+                .agg(count("*").alias("Message_Count"),
+                        avg("CPU").alias("CPU_Utilization_Mean"),
+                        avg("RAM Utilization").alias("RAM_Utilization_Mean"),
+                        avg("Disk Utilization").alias("Disk_Utilization_Mean"),
+                        max("CPU").alias("CPU_Utilization_Peak"),
+                        max("RAM Utilization").alias("RAM_Utilization_Peak"),
+                        max("Disk Utilization").alias("Disk_Utilization_Peak"))
+                .orderBy("window");
 
-        // Create context with a 2 seconds batch interval
-        SparkConf sparkConf = new SparkConf().setAppName("JavaDirectKafkaWordCount").setMaster("local")
-                .set("spark.driver.memory","471859200");
-        JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.seconds(2));
 
-        Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
-        Map<String, Object> kafkaParams = new HashMap<>();
-        kafkaParams.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
-        kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-        // Create direct kafka stream with brokers and topics
-        JavaInputDStream<ConsumerRecord<String, String>> messages = KafkaUtils.createDirectStream(
-                jssc,
-                LocationStrategies.PreferConsistent(),
-                ConsumerStrategies.Subscribe(topicsSet, kafkaParams));
+        final String parquetFile = "test.parquet";
+        final String codec = "parquet";
 
-        // Get the lines, split them into words, count the words and print
-        JavaDStream<String> lines = messages.map(ConsumerRecord::value);
-        JavaDStream<String> words = lines.flatMap(x -> Arrays.asList(SPACE.split(x)).iterator());
-        JavaPairDStream<String, Integer> wordCounts = words.mapToPair(s -> new Tuple2<>(s, 1))
-                .reduceByKey(Integer::sum);
-        wordCounts.print();
+        intervalsDS.write().format(codec).mode(SaveMode.Append).save(parquetFile);
+        query.awaitTermination();
 
-        // Start the computation
-        jssc.start();
-        jssc.awaitTermination();
+//        intervalsDS.write().mode(SaveMode.Append).parquet("mama/hello.parquet");
+
+        //write stream in parquet
+//        intervalsDS.writeStream()
+////                .format("parquet")
+////                .option("path","parquets")
+////                .option("checkpointLocation","checkpoints")
+//                .format("console")
+//                .outputMode("append")
+//                .trigger(ProcessingTime(1_000))
+////                .outputMode(OutputMode.Append())
+//////                .option("truncate", "false")
+//                .start()
+//                .awaitTermination();
+//        spark.close();
+
+
+
+
+
     }
+
 }
