@@ -1,12 +1,10 @@
-package Controllers;
-
-
+package Services.Quering;
 
 public class Query {
-    int End;
-    int Start;
-    String startDay;
-    String endDay;
+    private int End;
+    private int Start;
+    private String startDay;
+    private String endDay;
 
 
     public String getStartDay() {

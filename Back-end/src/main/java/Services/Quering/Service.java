@@ -1,4 +1,4 @@
-package Controllers;
+package Services.Quering;
 
 import java.sql.*;
 
@@ -11,7 +11,9 @@ public class Service implements Runnable {
     String result = "";
 
     public Service( String folder, String day, int start, int end, int serviceNumber) throws ClassNotFoundException, SQLException {
+
         Class.forName("org.duckdb.DuckDBDriver");
+
         this.con = DriverManager.getConnection("jdbc:duckdb:");
         this.folder = folder;
         this.day = day;

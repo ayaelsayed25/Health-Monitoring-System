@@ -1,5 +1,5 @@
 
-package Controllers;
+package Services.Quering;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -133,7 +133,6 @@ public class Response {
         Response response = new Response();
 
         response.getResponse(10,20,"01-01-2023","01-01-2023");
-       // C:\Users\Blu-Ray\IdeaProjects\demo\batchViews\01-01-2023_4-r-00000.parquet
     }
 
 

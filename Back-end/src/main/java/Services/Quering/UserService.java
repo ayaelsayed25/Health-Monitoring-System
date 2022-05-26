@@ -1,4 +1,4 @@
-package Controllers;
+package Services.Quering;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 
