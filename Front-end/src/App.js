@@ -36,7 +36,7 @@ function App() {
 
     console.log(parameters)
 
-    axios.post('http://localhost:8085/query', parameters)
+    axios.post('http://167.172.39.122:8082/query', parameters)
     .then(response =>  setDataTable(response.data))
     .catch(error => {
         this.setState({ errorMessage: error.message });
@@ -50,20 +50,6 @@ function App() {
 
       <div style={divStyle} >
 
-        
-        {/* <ComboBoxComponent 
-          id='choice' 
-          placeholder='select a query'
-          dataSource={sportsData}
-          fields={{value:"Id", text:"query"}}
-        />
-
-        <DatePickerComponent  
-          id='start' 
-          placeholder="Enter start Date"
-          value={dateValue}
-          format="dd-MM-yyyy"
-        /> */}
         <div>
           <DateTimePicker onChange={setStart} value={start} />
         </div>
@@ -80,7 +66,8 @@ function App() {
       <Table data={dataTable} column={column} />
     </span>
    
-  );
-}
-
-export default App;
+   );
+  }
+  
+  export default App;
+  
