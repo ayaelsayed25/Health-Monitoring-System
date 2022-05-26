@@ -30,9 +30,19 @@ public class Runner {
 
             try {
                 runner.jobRun(dateInString);
+
                 FileWriter myWriter = new FileWriter("batchTime.txt");
                 myWriter.write(Integer.toString(minutes));
                 myWriter.close();
+
+                File file = new File("realTimeViews/old_view.parquet");
+
+                File file2 = new File("realTimeViews/new_view.parquet");
+
+                file.delete();
+
+                file2.renameTo(file);
+
             } catch (IOException | InterruptedException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

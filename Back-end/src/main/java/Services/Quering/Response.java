@@ -4,7 +4,7 @@ package Services.Quering;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -67,8 +67,19 @@ public class Response {
         Thread[] services = new Thread[numberOfServices];
         Service[] services_result = new Service[numberOfServices];
         StringBuilder result = new StringBuilder();
+
         for(int i = 0; i < numberOfServices; i++){
-            services_result[i] = new Service(folder, day, start, end, i+1);
+            String condition;
+            if (folder.compareTo("realTimeViews") == 0) {
+                String startTimestamp = getTimestamp(start, day);
+                String endTimestamp = getTimestamp(end, day);
+
+                condition = String.format("WHERE start = '%s' and end = '%s' and serviceName= '%s';",
+                        startTimestamp, endTimestamp, "service-" + (i+1));
+            }
+            else
+                condition = String.format(" WHERE Minute BETWEEN %d AND %d ;", start, end);
+            services_result[i] = new Service(folder, day, start, end, i+1, condition);
             services[i] = new Thread(services_result[i]);
         }
 
@@ -78,11 +89,24 @@ public class Response {
         for(int i = 0; i < numberOfServices; i++)
             services[i].join();
 
-        for(int i = 0; i < numberOfServices; i++)
-            result.append(services_result[i].getResult());
-
+        for(int i = 0; i < numberOfServices; i++) {
+//            result.append(services_result[i].getResult());
+            result.append(services_result[i].getResult()).append("\n");
+        }
         return result.toString();
 
+    }
+
+
+    private String getTimestamp(int minutesView, String day){
+
+        String hours = Integer.toString(minutesView/60);
+        if(Integer.parseInt(hours) < 10) hours = "0" + hours;
+        String minutes = Integer.toString(minutesView%60) ;
+        if(Integer.parseInt(minutes) < 10) minutes = "0" + minutes;
+        if (Integer.parseInt(day.substring(0,2)) < 10)
+            day = day.substring(1);
+        return day + " " + hours + ":" + minutes + ":00 PM +00:00";
     }
 
 
@@ -132,7 +156,7 @@ public class Response {
 
         Response response = new Response();
 
-        response.getResponse(10,20,"01-01-2023","01-01-2023");
+        System.out.println(response.getResponse(10,20,"01-01-2023","01-01-2023"));
     }
 
 

@@ -6,6 +6,13 @@ public class Query {
     private String startDay;
     private String endDay;
 
+    public Query(int end, int start, String startDay, String endDay) {
+        this.End = end;
+        this.Start = start;
+        this.startDay = startDay;
+        this.endDay = endDay;
+    }
+
 
     public String getStartDay() {
         return startDay;

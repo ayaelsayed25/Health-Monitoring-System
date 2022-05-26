@@ -8,9 +8,10 @@ public class Service implements Runnable {
     int start;
     int end;
     int serviceNumber;
+    String condition;
     String result = "";
 
-    public Service( String folder, String day, int start, int end, int serviceNumber) throws ClassNotFoundException, SQLException {
+    public Service( String folder, String day, int start, int end, int serviceNumber, String condition) throws ClassNotFoundException, SQLException {
 
         Class.forName("org.duckdb.DuckDBDriver");
 
@@ -20,11 +21,16 @@ public class Service implements Runnable {
         this.start = start;
         this.end = end;
         this.serviceNumber = serviceNumber;
+        this.condition = condition;
     }
 
     @Override
     public void run() {
-        String path = System.getProperty("user.dir") + "/" + this.folder + "/" + this.day +
+        String path;
+        if(folder.compareTo("realTimeViews") == 0)
+            path = System.getProperty("user.dir") + "/realTimeViews/old_view.parquet";
+        else
+            path = System.getProperty("user.dir") + "/" + this.folder + "/" + this.day +
                 "/" + this.day + "_" + this.serviceNumber + "-r-00000.parquet";
         try {
             readFile(path);
@@ -41,7 +47,7 @@ public class Service implements Runnable {
                         "sum(DiskUtilizationMean)/count(DiskUtilizationMean), " +
                         "sum(RamUtilizationMean)/count(RamUtilizationMean), " +
                         "max(CpuUtilizationPeak), max(DiskUtilizationPeak), max(RamUtilizationPeak)" +
-                        " FROM '%s' WHERE Minute BETWEEN %d AND %d ;", path, start, end));
+                        " FROM '%s' " + condition, path));
         rs.next();
 
         this.result = "service : " + serviceNumber +
